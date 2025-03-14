@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Карточка с гироскопом</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    @font-face {
+      font-family: 'SF Handwriting Black';
+      src: url('sf-handwriting-black.ttf') format('truetype');
+      font-weight: normal;
+      font-style: normal;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: all 0.3s ease;
+    }
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #000, #1a1a1a);
+      overflow-x: hidden;
+    }
+    .icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .name-icon {
+      height: 1em;
+      width: auto;
+      vertical-align: middle;
+      margin-left: 2px;
+    }
+    
+    .container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+      perspective: 1000px;
+      background: linear-gradient(135deg, #000, #1a1a1a);
+    }
+    
+    .profile-card {
+      position: relative;
+      background: linear-gradient(135deg, rgba(17,17,17,0.5), rgba(17,17,17,0.3));
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 15px;
+      backdrop-filter: blur(5px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      width: 500px;
+      max-width: 90%;
+      transition: transform 0.2s ease-out, box-shadow 0.3s ease;
+      transform: rotateX(0deg) rotateY(0deg) scale(1);
+      box-shadow: 0 0 20px rgba(255,255,255,0.5);
+      overflow: hidden;
+    }
+    
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 3px solid #fff;
+      transition: transform 0.6s ease;
+      margin-bottom: 20px;
+    }
+    .profile-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    h1 {
+      position: relative;
+      display: inline-block;
+      font-weight: 600;
+      font-size: 2rem;
+      margin-bottom: 30px;
+      color: #fff;
+      transition: color 0.5s ease;
+      font-family: 'SF Handwriting Black', 'Montserrat', sans-serif;
+    }
+    
+    .links-row {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 5px;
+    }
+    
+    .link {
+      position: relative;
+      text-decoration: none;
+      color: #fff;
+      background: rgba(51,51,51,0.8);
+      padding: 12px 18px;
+      border: 2px solid transparent;
+      border-radius: 10px;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      animation: buttonRock 4s infinite ease-in-out;
+      font-size: 0.95rem;
+    }
+    .link:hover, .link:active {
+      border-color: #fff;
+    }
+    
+    @media (max-width:768px) {
+      .profile-card {
+        width: 90%;
+        max-width: 400px;
+        padding: 20px;
+        animation: slideInUp 0.8s ease-out;
+      }
+      .profile-image {
+        width: 120px;
+        height: 120px;
+      }
+      h1 {
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+      }
+      .links-row {
+        margin-bottom: 15px;
+        gap: 4px;
+      }
+      .link {
+        font-size: 0.85rem;
+        padding: 10px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <div class="profile-card">
+      <div class="profile-image">
+        <img src="https://i.ibb.co/WNHjn2DB/5377690386698464952-120.jpg" alt="Profile Image">
+      </div>
+      
+      <h1 data-text="skream">
+        skream
+        <img class="name-icon" src="https://i.ibb.co/5Xx1qVYd/png-transparent-wing-feather-a-pair-of-wings-white-wings-symmetry-removebg-preview.png" alt="Verification Icon">
+      </h1>
+      
+      <div class="links-row">
+        <a class="link" href="https://t.me/gdeskream" target="_blank">
+          <img class="icon" src="https://i.imgur.com/Ws2zUiZ.png" alt="Telegram Logo">
+          Telegram
+        </a>
+        <a class="link" href="https://discordapp.com/users/946085242261872690" target="_blank">
+          <img class="icon" src="https://i.ibb.co/LzBWKjHn/png-transparent-discord-logo-thumbnail-removebg-preview.png" alt="Discord Logo">
+          Discord
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Белый шарик, следящий за курсором -->
+  <script>
+    if (!("ontouchstart" in window)) {
+      const cursorBall = document.createElement("div");
+      cursorBall.id = "cursor-ball";
+      document.body.appendChild(cursorBall);
+      const style = document.createElement("style");
+      style.textContent = `
+        #cursor-ball {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #fff;
+          pointer-events: none;
+          opacity: 0.8;
+          mix-blend-mode: screen;
+          z-index: 9999;
+          filter: blur(1px);
+        }
+      `;
+      document.head.appendChild(style);
+  
+      let posX = window.innerWidth / 2;
+      let posY = window.innerHeight / 2;
+      let targetX = posX;
+      let targetY = posY;
+  
+      document.addEventListener("mousemove", (e) => {
+        targetX = e.clientX;
+        targetY = e.clientY;
+      });
+  
+      function animateCursor() {
+        posX += (targetX - posX) * 0.8;
+        posY += (targetY - posY) * 0.8;
+        cursorBall.style.transform = `translate(${posX - 6}px, ${posY - 6}px)`;
+        requestAnimationFrame(animateCursor);
+      }
+      animateCursor();
+    }
+  </script>
+
+  <!-- Гироскоп и движение карточки -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const card = document.querySelector('.profile-card');
+      if (!card) return;
+  
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+        const deltaX = x - centerX;
+        const deltaY = y - centerY;
+        const rotateX = (deltaY / centerY) * -10;
+        const rotateY = (deltaX / centerX) * 10;
+        card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1)`;
+      });
+  
+      card.addEventListener('mouseleave', () => {
+        card.style.transform = "rotateX(0deg) rotateY(0deg) scale(1)";
+      });
+    });
+  </script>
+</body>
+</html>
